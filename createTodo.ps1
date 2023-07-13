@@ -3,6 +3,9 @@ param(
     [string]$jsonFileName
 )
 
+# Set the script location so it properly references file
+Set-Location $PSScriptRoot
+
 # Set your API token
 #$apiToken = Get-Content -Path './config.txt'
 $encryptedApiKey = Get-Content -Path "./config.txt"
@@ -37,7 +40,7 @@ function Add-Task {
     # If the task has subtasks, create them
     if ($task.PSObject.Properties.Name -contains 'subtasks') {
         foreach ($subtask in $task.subtasks) {
-            Create-Task -task $subtask -parentId $taskId
+            Add-Task -task $subtask -parentId $taskId
         }
     }
 }

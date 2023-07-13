@@ -14,7 +14,7 @@ $secureApiKey = ConvertTo-SecureSTring -String $encryptedApiKey
 $apiToken = [System.Net.NetworkCredential]::new("", $secureApiKey).Password
 
 # Recursive function to create a task and its subtasks
-function Create-Task {
+function Add-Task {
     param($task, $parentId)
 
     # Convert the task to a hashtable cause just JSON is funky about adding proper
@@ -46,4 +46,4 @@ function Create-Task {
 $rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
 
 # Create the root task and its subtasks
-Create-Task -task $rootTask -parentId $null
+Add-Task -task $rootTask -parentId $null

@@ -1,3 +1,8 @@
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$jsonFileName
+)
+
 # Set your API token
 #$apiToken = Get-Content -Path './config.txt'
 $encryptedApiKey = Get-Content -Path "./config.txt"
@@ -38,7 +43,7 @@ function Create-Task {
 }
 
 # Load the root task from the JSON file
-$rootTask = Get-Content -Path .\PRChecklist.json | ConvertFrom-Json
+$rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
 
 # Create the root task and its subtasks
 Create-Task -task $rootTask -parentId $null

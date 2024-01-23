@@ -1,0 +1,25 @@
+name: Auto Merge Master into Develop
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  merge-master-into-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 'master'
+          fetch-depth: 0 # Fetch all history for all branches and tags
+
+      - name: Merge master into develop
+        run: |
+          git config --global user.name 'Auto Merge Bot'
+          git config --global user.email 'noreply@github.com'
+          git fetch origin
+          git checkout develop
+          git merge master
+          git push origin develop

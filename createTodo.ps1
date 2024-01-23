@@ -1,23 +1,8 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$jsonFileName
-)
-
-# Set the script location so it properly references file
-Set-Location $PSScriptRoot
-
 # Set your API token
-#$apiToken = Get-Content -Path './config.txt'
-$encryptedApiKey = Get-Content -Path "./config.txt"
-
-# Convert encryptedApiKey to a secure string
-$secureApiKey = ConvertTo-SecureSTring -String $encryptedApiKey
-
-# Decrypt the secure string to get the plaintext API key
-$apiToken = [System.Net.NetworkCredential]::new("", $secureApiKey).Password
+$apiToken = Get-Content -Path './config.txt'
 
 # Recursive function to create a task and its subtasks
-function Add-Task {
+function Create-Task {
     param($task, $parentId)
 
     # Convert the task to a hashtable cause just JSON is funky about adding proper
@@ -46,7 +31,7 @@ function Add-Task {
 }
 
 # Load the root task from the JSON file
-$rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
+$rootTask = Get-Content -Path .\PRChecklist.json | ConvertFrom-Json
 
 # Create the root task and its subtasks
-Add-Task -task $rootTask -parentId $null
+Create-Task -task $rootTask -parentId $null

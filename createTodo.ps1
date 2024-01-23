@@ -25,7 +25,7 @@ function Create-Task {
     # If the task has subtasks, create them
     if ($task.PSObject.Properties.Name -contains 'subtasks') {
         foreach ($subtask in $task.subtasks) {
-            Create-Task -task $subtask -parentId $taskId
+            Add-Task -task $subtask -parentId $taskId
         }
     }
 }

@@ -6,6 +6,15 @@ if ($args.Length -eq 0)
 }
 $jsonFileName = $args[0]
 
+# Set default value (Should be overwritten by json file)
+$rootTask = [PSCustomObject]@{
+    content = $null
+    description = $null
+    priority = $null
+    due_string = $null
+    subtasks = $null
+}
+
 # Set your API token
 $apiToken = Get-Content -Path './config.txt'
 
@@ -41,5 +50,22 @@ function Create-Task {
 # Load the root task from the JSON file
 $rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
 
-# Create the root task and its subtasks
-Create-Task -task $rootTask -parentId $null
+# Confirm file given is valid JSON
+if (Test-Path $jsonFileName) {
+    try {
+        # Load the root task from the JSON file
+        $rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
+    } catch {
+        Write-Host "Invalid JSON content in file: $jsonFileName! Error $($_.Exception.Message)"
+    }
+} else {
+    Write-Host "File not found: $jsonFileName"
+}
+
+try {
+    # Create the root task and its subtasks
+    Create-Task -task $rootTask -parentId $null
+} catch {
+    Write-Host "An Uncaught error occured while Creating task! Error: $($_.Exception.Message)"
+}
+

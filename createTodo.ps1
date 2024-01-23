@@ -1,3 +1,11 @@
+# Check if filename was provided
+if ($args.Length -eq 0)
+{
+    Write-Host "Please provide a JSON filename as an argument."
+    exit
+}
+$jsonFileName = $args[0]
+
 # Set your API token
 $apiToken = Get-Content -Path './config.txt'
 
@@ -25,13 +33,13 @@ function Create-Task {
     # If the task has subtasks, create them
     if ($task.PSObject.Properties.Name -contains 'subtasks') {
         foreach ($subtask in $task.subtasks) {
-            Add-Task -task $subtask -parentId $taskId
+            Create-Task -task $subtask -parentId $taskId
         }
     }
 }
 
 # Load the root task from the JSON file
-$rootTask = Get-Content -Path .\PRChecklist.json | ConvertFrom-Json
+$rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
 
 # Create the root task and its subtasks
 Create-Task -task $rootTask -parentId $null

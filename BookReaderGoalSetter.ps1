@@ -19,12 +19,14 @@ function Create-FormInput([System.Windows.Forms.Form]$form, [string]$labelText, 
 }
 
 # Function to calculate the reading schedule
-function Generate-ReadingSchedule($title, $totalPages, $pagesPerWeek) {
+function Generate-ReadingSchedule($title, $totalPages, $pagesPerWeek, $startDate) {
     $weeksNeeded = [math]::Ceiling($totalPages / $pagesPerWeek)
     $daysPerWeek = 7 # Adjust this for the actual number of days you plan to read each week
+    $currentDate = $startDate
     $rootTask = [PSCustomObject]@{
         content    = "Read '$title'"
         priority   = "3"
+        due_date   = $startDate.AddDays(($weeksNeeded * $daysPerWeek) - 1).ToString("yyyy-MM-dd")
         subtasks   = @()
     }
 
@@ -41,14 +43,17 @@ function Generate-ReadingSchedule($title, $totalPages, $pagesPerWeek) {
 
             if ($dayStartPage -le $weekEndPage) {
                 $weekSubtasks += [PSCustomObject]@{
-                    content = "Read '$title' pages $dayStartPage to $dayEndPage"
-                    priority = "3"
+                    content   = "Read '$title' pages $dayStartPage to $dayEndPage"
+                    due_date  = $currentDate.ToString("yyyy-MM-dd")
+                    priority  = "3"
                 }
+                $currentDate = $currentDate.AddDays(1)
             }
         }
 
         $rootTask.subtasks += [PSCustomObject]@{
             content    = $weekContent
+            due_date   = $currentDate.AddDays(-1).ToString("yyyy-MM-dd") # Last day of the week
             priority   = "3"
             subtasks   = $weekSubtasks
         }
@@ -79,8 +84,9 @@ $submitButton.Add_Click({
     $title = $titleBox.Text
     $totalPages = [int]$pagesBox.Text
     $pagesPerWeek = [int]$pagesPerWeekBox.Text
-
-    $schedule = Generate-ReadingSchedule $title $totalPages $pagesPerWeek
+    $startDate = Get-Date # or set a specific start date
+    
+    $schedule = Generate-ReadingSchedule $title $totalPages $pagesPerWeek $startDate # Pass the $startDate here
     $json = $schedule | ConvertTo-Json -Depth 10
 
     # Specify the file name and path here

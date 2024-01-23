@@ -32,6 +32,8 @@ function Create-Task {
 
     # Create the task
     $taskJson = $taskHashtable | ConvertTo-Json -Depth 10
+
+    #Write-Host "Task Create: $taskJson"
     $response = Invoke-RestMethod -Uri 'https://api.todoist.com/rest/v2/tasks' -Method Post -Body $taskJson -ContentType 'application/json' -Headers @{
         'Authorization' = "Bearer $apiToken"
     }
@@ -57,6 +59,8 @@ if (Test-Path $jsonFileName) {
         $rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
     } catch {
         Write-Host "Invalid JSON content in file: $jsonFileName! Error $($_.Exception.Message)"
+          # Print the full error details
+        $Error[0] | Format-List -Force
     }
 } else {
     Write-Host "File not found: $jsonFileName"
@@ -67,5 +71,7 @@ try {
     Create-Task -task $rootTask -parentId $null
 } catch {
     Write-Host "An Uncaught error occured while Creating task! Error: $($_.Exception.Message)"
+     # Print the full error details
+     $Error[0] | Format-List -Force
 }
 

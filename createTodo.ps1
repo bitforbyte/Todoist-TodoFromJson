@@ -3,26 +3,39 @@ $global:dateFormat = "MM/dd/yy"
 
 # Function to prompt user based on custom placeholders
 function Get-UserInputFromPlaceholder {
-    param([string]$placeholder)
-    if ($placeholder -match "\{PromptUser_(.+)\}") {
-        $parts = $placeholder -split ','
-        $promptMessage = $parts[0].Substring(11) # Remove '{PromptUser_' prefix
-        $typeHint = if ($parts.Length -gt 1) { "[$($parts[1].Trim())]" } else { "" }
-        $defaultValue = if ($parts.Length -gt 2) { $parts[2].Trim() } else { "" }
-        
-        # Prepare the full prompt message, including the default value if provided
-        $fullPromptMessage = "$promptMessage $typeHint"
-        if ($defaultValue -ne "") {
-            $fullPromptMessage += " [Default: $defaultValue]"
-        }
+    param([string]$text)
+    # Regex to find and process all placeholders in the given text
+    $placeholderPattern = '\{PromptUser_([^}]+)\}'
+    $matches = [regex]::Matches($text, $placeholderPattern)
 
+    foreach ($match in $matches) {
+        $fullPlaceholder = $match.Value
+        $placeholderContent = $match.Groups[1].Value
+
+        # Split the placeholder content to extract the prompt and optional parts
+        $parts = $placeholderContent -split ','
+        $promptMessage = $parts[0]
+        $typeHint = ''
+        $defaultValue = ''
+        if ($parts.Length -gt 1) { $typeHint = "[$($parts[1].Trim())]" }
+        if ($parts.Length -gt 2) { $defaultValue = $parts[2].Trim() }
+
+        # Construct the full prompt message, including the default value if provided
+        $fullPromptMessage = $promptMessage
+        if ($typeHint -ne '') { $fullPromptMessage += " $typeHint" }
+        if ($defaultValue -ne '') { $fullPromptMessage += " [Default: $defaultValue]" }
+
+        # Read user input
         $userInput = Read-Host $fullPromptMessage
         if (-not $userInput) { # If user input is empty, use the default value
             $userInput = $defaultValue
         }
-        return $userInput
+
+        # Replace only the current placeholder in the text with the user's input
+        $text = $text.Replace($fullPlaceholder, $userInput)
     }
-    return $placeholder
+
+    return $text
 }
 
 

@@ -1,77 +1,55 @@
-# Check if filename was provided
-if ($args.Length -eq 0)
-{
-    Write-Host "Please provide a JSON filename as an argument."
-    exit
-}
-$jsonFileName = $args[0]
-
-# Define the desired date format any user input will use
+# Define the desired date format and user input format
 $global:dateFormat = "MM/dd/yy"
 
-# Set default value (Should be overwritten by json file)
-$rootTask = [PSCustomObject]@{
-    content = $null
-    description = $null
-    priority = $null
-    due_string = $null
-    subtasks = $null
-}
-
-# Set your API token
-$apiToken = Get-Content -Path './config.txt'
-
-
-# Function to handle prompt for due_string if needed
-function Get-UserDueDate {
-    param([string]$dueString)
-    # Check if due_string contains a prompt placeholder
-    if ($dueString -match "\{PromptUser_(.+)\}") {
-        $promptMessage = $matches[1] + " (Format: $global:dateFormat)"
-        # Prompt user for input
-        $userInput = Read-Host $promptMessage
-        # Validate and return user input, you may add more validation logic here
-        try {
-            [datetime]::ParseExact($userInput, $global:dateFormat, $null) | Out-Null
-            return $userInput
-        } catch {
-            Write-Host "Invalid date. Please use the format $global:dateFormat."
-            # Recursive call until valid input is provided
-            return Get-UserDueDate $dueString
+# Function to prompt user based on custom placeholders
+function Get-UserInputFromPlaceholder {
+    param([string]$placeholder)
+    if ($placeholder -match "\{PromptUser_(.+)\}") {
+        $parts = $placeholder -split ','
+        $promptMessage = $parts[0].Substring(11) # Remove '{PromptUser_' prefix
+        $typeHint = if ($parts.Length -gt 1) { "[$($parts[1].Trim())]" } else { "" }
+        $defaultValue = if ($parts.Length -gt 2) { $parts[2].Trim() } else { "" }
+        
+        # Prepare the full prompt message, including the default value if provided
+        $fullPromptMessage = "$promptMessage $typeHint"
+        if ($defaultValue -ne "") {
+            $fullPromptMessage += " [Default: $defaultValue]"
         }
-    } else {
-        # If no prompt is needed, return the original due_string
-        return $dueString
+
+        $userInput = Read-Host $fullPromptMessage
+        if (-not $userInput) { # If user input is empty, use the default value
+            $userInput = $defaultValue
+        }
+        return $userInput
+    }
+    return $placeholder
+}
+
+
+
+# Function to recursively process each task and subtask for placeholders
+function Process-TaskObject {
+    param([PSCustomObject]$task)
+    foreach ($prop in $task.PSObject.Properties) {
+        if ($prop.TypeNameOfValue -eq 'System.String' -and $prop.Value -match "\{PromptUser_.+\}") {
+            $prop.Value = Get-UserInputFromPlaceholder $prop.Value
+        } elseif ($prop.Name -eq 'subtasks' -and $prop.Value) {
+            foreach ($subtask in $prop.Value) {
+                Process-TaskObject -task $subtask
+            }
+        }
     }
 }
 
-# Recursive function to create a task and its subtasks
+# Function to create a task (and subtasks) in Todoist via API calls
 function Create-Task {
-    param($task, $parentId)
-
-    # Check and resolve due_string if it contains a prompt
-    if ($task.due_string) {
-        $task.due_string = Get-UserDueDate $task.due_string
-    }
-
-    # Convert the task to a hashtable cause just JSON is funky about adding proper
-    $taskHashtable = $task | ConvertTo-Json -Depth 10 | ConvertFrom-Json  -AsHashtable
-
-    # Add the parent ID to the task if it's not null
-    if ($null -ne $parentId) {
-        $taskHashtable['parent_id'] = $parentId
-    }
-
-    # Create the task
+    param($task, $parentId = $null)
+    Process-TaskObject -task $task
+    $taskHashtable = $task | ConvertTo-Json -Depth 10 | ConvertFrom-Json -AsHashtable
+    if ($null -ne $parentId) { $taskHashtable['parent_id'] = $parentId }
     $taskJson = $taskHashtable | ConvertTo-Json -Depth 10
-    $response = Invoke-RestMethod -Uri 'https://api.todoist.com/rest/v2/tasks' -Method Post -Body $taskJson -ContentType 'application/json' -Headers @{
-        'Authorization' = "Bearer $apiToken"
-    }
-
-    # Get the ID of the task
+    $response = Invoke-RestMethod -Uri 'https://api.todoist.com/rest/v2/tasks' -Method Post -Body $taskJson -ContentType 'application/json' -Headers @{ 'Authorization' = "Bearer $apiToken" }
     $taskId = $response.id
-
-    # If the task has subtasks, create them
     if ($task.PSObject.Properties.Name -contains 'subtasks') {
         foreach ($subtask in $task.subtasks) {
             Create-Task -task $subtask -parentId $taskId
@@ -79,25 +57,23 @@ function Create-Task {
     }
 }
 
-# Load the root task from the JSON file
-$rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
+# Check for the JSON filename argument
+if ($args.Length -eq 0) {
+    Write-Host "Please provide a JSON filename as an argument."
+    exit
+}
 
-# Confirm file given is valid JSON
+$jsonFileName = $args[0]
+$apiToken = Get-Content -Path './config.txt'
+
+# Confirm the JSON file exists and load it
 if (Test-Path $jsonFileName) {
     try {
-        # Load the root task from the JSON file
         $rootTask = Get-Content -Path $jsonFileName | ConvertFrom-Json
+        Create-Task -task $rootTask
     } catch {
         Write-Host "Invalid JSON content in file: $jsonFileName! Error $($_.Exception.Message)"
     }
 } else {
     Write-Host "File not found: $jsonFileName"
 }
-
-try {
-    # Create the root task and its subtasks
-    Create-Task -task $rootTask -parentId $null
-} catch {
-    Write-Host "An Uncaught error occured while Creating task! Error: $($_.Exception.Message)"
-}
-

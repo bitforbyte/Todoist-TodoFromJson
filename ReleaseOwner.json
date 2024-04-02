@@ -1,31 +1,222 @@
 {
-    "content": "Parent task",
-    "description": "",
-    "priority": "3",
-    "due_string": "Today",
-    "subtasks": [
+  "content": "Release {PromptUser_What is the release Number, int, 176}",
+  "description": "This task is the overall task tracking for release",
+  "priority": 4,
+  "due_string": "{PromptUser_What is the day after your release date, date, 04/18/24}",
+  "subtasks": [
         {
-            "content": "Subtask 1",
-            "description": "",
-            "priority": "3",
-            "due_string": "{PromptUser_What is the release date}",
+            "content": "First day as release owner",
+            "description": "These actions are taken on your first day of being a release owner",
+            "priority": 3,
+            "due_string": "{PromptUser_What is first date of your release owner (aka day after privious release), date, 04/04/24}",
             "subtasks": [
                 {
-                    "content": "Sub-subtask 1",
-                    "description": "",
-                    "priority": "3"
+                    "content": "Confirm dates for release and check for holidays",
+                    "description": "Review if any holidays, code freezes, company events, or anything that could impact the release and shift dates.",
+                    "priority": 4
                 },
                 {
-                    "content": "Sub-subtask 2",
-                    "description": "",
-                    "priority": "3"
+                    "content": "Check technow for access",
+                    "description": "Technow for some reason de-activates any users after a week or two, so make sure you have access.",
+                    "priority": 4
+                },
+                {
+                    "content": "Send notification to ROs to check availbility during release and team members on code claim day",
+                    "description": "The goal of this is to notify all those involved in the release and have them check if they're available, if not they can swap early..",
+                    "priority": 2
                 }
             ]
         },
         {
-            "content": "Subtask 2",
-            "description": "",
-            "priority": "3"
+            "content": "First Monday as Release Owner",
+            "description": "This is the first Monday as RO duties, not alot to do",
+            "priority": 3,
+            "due_string": "{PromptUser_What is date of the first Monday as Release owner (aka First monday after being RO), date, 04/08/24}",
+            "subtasks": [
+                {
+                    "content": "Send release schedule to release team",
+                    "description": "The goal of this is to notify all those involved of how the release will go.",
+                    "priority": 2
+                },
+                {
+                    "content": "Send go/no-go invite",
+                    "description": "Send the Go/No go meeting to everyone involved, use teams.",
+                    "priority": 2
+                },
+                {
+                    "content": "Send Release team meeting on release night",
+                    "description": "Send the invite to all RC and ETO members for release night, use teams.",
+                    "priority": 2
+                }
+
+            ]
+        },
+        {
+            "content": "Send Team Reminder",
+            "description": "Send notificaiton to team to remind them of upcoming code freeze date.",
+            "priority": 2,
+            "due_string": "{PromptUser_What is the date to send reminder (Wednesday a week before release), date, 04/10/24}"
+        },
+        {
+            "content": "Code Freeze Day",
+            "description": "This day is the most important to the release owner, usually on Friday before release",
+            "priority": 4,
+            "due_string": "{PromptUser_What is the code freeze date (Usually Friday before release), date, 04/12/24}",
+            "subtasks": [
+                {
+                    "content": "Remind team of Code freeze day",
+                    "description": "Remind team that today is code freeze day and to have any team members claim any code on Monday for any team member on PTO",
+                    "priority": 4
+                },
+                {
+                    "content": "Follow up with teams",
+                    "description": "See if anything is needed, what is the status of remaining items",
+                    "priority": 4
+                },
+                {
+                    "content": "Get confirmation of all changes from each team",
+                    "description": "Team should have all stuff in",
+                    "priority": 4
+                },
+                {
+                    "content": "Call code freeze",
+                    "description": "If there are no issues or concerns, call Code freeze",
+                    "priority": 4
+                },
+                {
+                    "content": "Review RC tickets",
+                    "description": "Review the RC tickets for correctness",
+                    "priority": 4,
+                    "subtasks": [
+                        {
+                            "content": "Verify all repos are attached",
+                            "description": "Make sure all repos are added to the ticket, you can look at branches with code on the ticket and if anything is not on the RC ticket. Ask about it.",
+                            "priority": 4
+                        },
+                        {
+                            "content": "Make release branch",
+                            "description": "For every repo, make the release branches (ensure that branches are set up correctly)",
+                            "priority": 4
+                        }
+                    ]
+                },
+                {
+                    "content": "Build Release",
+                    "description": "Build release branches into QUA for regression testing",
+                    "priority": 4,
+                    "subtasks": [
+                        {
+                            "content": "Verify build info",
+                            "description": "Ensure all repo, team city, octo links are all correct, there are some that are very similar.",
+                            "priority": 4
+                        },
+                        {
+                            "content": "Make release branches of develop",
+                            "description": "For every repo, make the release branches (ensure that branches are set up correctly)",
+                            "priority": 4
+                        },
+                        {
+                            "content": "Create PRs",
+                            "description": "Create PR links from release branch into master",
+                            "priority": 4
+                        },
+                        {
+                            "content": "Send out PR links to all tech teams",
+                            "description": "Create technow ticket with info for release",
+                            "priority": 4
+                        },
+                        {
+                            "content": "Deploy release branches to QUA",
+                            "description": "Create PR links from release branch into master",
+                            "priority": 4
+                        }
+                    ]
+                },
+                {
+                    "content": "Get Rollback links for deployment",
+                    "description": "Get the rollback links in case a rollback is needed and it will be put on the CAB ticket.",
+                    "priority": 3
+                },
+                {
+                    "content": "Create and fill out technow CAB ticket",
+                    "description": "Create technow ticket with info for release",
+                    "priority": 4
+                }
+            ]
+        },
+        {
+            "content": "Code Claim day",
+            "description": "Code claim day is for everyone to claim there code, and get regression started and go to CAB.",
+            "priority": 4,
+            "due_string": "{PromptUser_What is the date for Code Claim (Usually monday before release), date, 04/15/24}",
+            "subtasks": [
+                {
+                    "content": "Get everyone to claim code",
+                    "description": "Follow up every hour or so to note what is left",
+                    "priority": 3
+                },
+                {
+                    "content": "Start regression",
+                    "description": "After all code is claimed, Email QA's to begin regression testing",
+                    "priority": 3
+                },
+                {
+                    "content": "Go to CAB and talk about ticket",
+                    "description": "This is to discuss the CAB ticket in CAB to ensure relase can go forward.",
+                    "priority": 3
+                }
+            ]
+        },
+        {
+            "content": "Day before release",
+            "description": "This is to discuss the CAB ticket in CAB to ensure relase can go forward.",
+            "priority": 4,
+            "due_string": "{PromptUser_Day before release date (Usually day before release), date, 04/16/24}",
+            "subtasks": [
+                {
+                    "content": "Confirm ETO tickets for DB Fence and iSeries Fence",
+                    "description": "Ensure all ETO resources are aware and know what they need to do.",
+                    "priority": 4
+                }
+            ]
+        },
+        {
+            "content": "Release Day",
+            "description": "This is the day for release everything we've worked on.",
+            "priority": 4,
+            "due_string": "{PromptUser_Release Date, date, 04/17/24}",
+            "subtasks": [
+                {
+                    "content": "Lead Go/no-Go meeting",
+                    "description": "Review the checklist.",
+                    "priority": 4
+                },
+                {
+                    "content": "Merge in PRs into master",
+                    "description": "If release is a go, then merge in all PRs.",
+                    "priority": 4
+                },
+                {
+                    "content": "Get Deploy links and put into technow ticket",
+                    "description": "Put deploy links in technow ticket so scms knows what to deploy",
+                    "priority": 4
+                },
+                {
+                    "content": "Confirm SCMS deployed links",
+                    "description": "Ensure everything is deployed correctly",
+                    "priority": 4
+                },
+                {
+                    "content": "Release code",
+                    "description": "Release all code for release",
+                    "priority": 4
+                },
+                {
+                    "content": "Send post release email",
+                    "description": "Send email to users after the release noting how it went",
+                    "priority": 4
+                }
+            ]
         }
     ]
 }

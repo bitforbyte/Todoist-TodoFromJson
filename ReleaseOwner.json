@@ -1,0 +1,31 @@
+{
+    "content": "Parent task",
+    "description": "",
+    "priority": "3",
+    "due_string": "Today",
+    "subtasks": [
+        {
+            "content": "Subtask 1",
+            "description": "",
+            "priority": "3",
+            "due_string": "{PromptUser_What is the release date}",
+            "subtasks": [
+                {
+                    "content": "Sub-subtask 1",
+                    "description": "",
+                    "priority": "3"
+                },
+                {
+                    "content": "Sub-subtask 2",
+                    "description": "",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Subtask 2",
+            "description": "",
+            "priority": "3"
+        }
+    ]
+}

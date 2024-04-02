@@ -6,6 +6,9 @@ if ($args.Length -eq 0)
 }
 $jsonFileName = $args[0]
 
+# Define the desired date format any user input will use
+$global:dateFormat = "MM/dd/yy"
+
 # Set default value (Should be overwritten by json file)
 $rootTask = [PSCustomObject]@{
     content = $null
@@ -18,9 +21,38 @@ $rootTask = [PSCustomObject]@{
 # Set your API token
 $apiToken = Get-Content -Path './config.txt'
 
+
+# Function to handle prompt for due_string if needed
+function Get-UserDueDate {
+    param([string]$dueString)
+    # Check if due_string contains a prompt placeholder
+    if ($dueString -match "\{PromptUser_(.+)\}") {
+        $promptMessage = $matches[1] + " (Format: $global:dateFormat)"
+        # Prompt user for input
+        $userInput = Read-Host $promptMessage
+        # Validate and return user input, you may add more validation logic here
+        try {
+            [datetime]::ParseExact($userInput, $global:dateFormat, $null) | Out-Null
+            return $userInput
+        } catch {
+            Write-Host "Invalid date. Please use the format $global:dateFormat."
+            # Recursive call until valid input is provided
+            return Get-UserDueDate $dueString
+        }
+    } else {
+        # If no prompt is needed, return the original due_string
+        return $dueString
+    }
+}
+
 # Recursive function to create a task and its subtasks
 function Create-Task {
     param($task, $parentId)
+
+    # Check and resolve due_string if it contains a prompt
+    if ($task.due_string) {
+        $task.due_string = Get-UserDueDate $task.due_string
+    }
 
     # Convert the task to a hashtable cause just JSON is funky about adding proper
     $taskHashtable = $task | ConvertTo-Json -Depth 10 | ConvertFrom-Json  -AsHashtable

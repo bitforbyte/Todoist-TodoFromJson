@@ -1,0 +1,150 @@
+{
+    "content": "Enhanced Story Checklist",
+    "description": "Detailed checklist for software development stories, including examples and considerations.",
+    "priority": "4",
+    "due_string": "Today",
+    "subtasks": [
+        {
+            "content": "Analysis and Design",
+            "description": "Understand what needs to be built and plan the architecture. Ensure you're solving the right problem and have considered all user flows.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Review the story/feature requirements.",
+                    "description": "Look for any ambiguities or assumptions. Clarify with stakeholders if necessary. Consider edge cases and non-happy paths.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Identify any dependencies.",
+                    "description": "List any external systems, APIs, or internal modules this story depends on. Verify availability and plan integration tests.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Create technical specifications and design documents.",
+                    "description": "Outline your proposed solution, including data models, algorithms, and system interfaces. Use diagrams for complex flows.",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Development",
+            "description": "Implement the solution. Focus on readability, maintainability, and performance of your code.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Setup the development environment.",
+                    "description": "Ensure you have the right SDKs, access to required services, and a working IDE. Consider using Docker or VMs for consistency.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Implement the main logic/features.",
+                    "description": "Break down the implementation into manageable pieces. Aim for small, testable commits. Keep in mind scalability and security.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Write unit tests.",
+                    "description": "Aim for high coverage, focusing on critical paths first. Consider boundary conditions, null inputs, and error cases.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Ensure coding standards are followed.",
+                    "description": "Use linters and formatters. Follow the team's style guide to improve code readability and reduce future maintenance costs.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Refactor and optimize code.",
+                    "description": "Improve code without changing its behavior. Look for patterns, eliminate redundancy, and consider performance optimizations.",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Testing",
+            "description": "Ensure your code works as expected in various scenarios. Testing early and often can prevent future headaches.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Perform unit testing.",
+                    "description": "Validate each piece of your code in isolation. Mock dependencies as needed. Look for logical errors and edge cases.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Conduct integration testing.",
+                    "description": "Test the interactions between components. Focus on interfaces and data flow. Use real or close-to-real environments.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Carry out regression testing.",
+                    "description": "After changes, ensure existing functionality still works. Automated test suites are invaluable here.",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Code Review and Refinement",
+            "description": "Collaboratively improve the quality of the codebase. Foster a culture of constructive feedback.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Submit code for review.",
+                    "description": "Provide context for your changes. Highlight any areas you're uncertain about or that require special attention.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Address review comments.",
+                    "description": "Respond to feedback promptly. Use it as an opportunity to learn and teach. If you disagree with a suggestion, discuss it openly.",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Deployment",
+            "description": "Get your changes into the hands of users. Plan carefully to minimize disruption.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Merge code to the main branch.",
+                    "description": "Ensure your branch is up to date and passes all checks. Coordinate with your team to avoid conflicts.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Deploy to staging environment.",
+                    "description": "Mimic production as closely as possible. Verify integrations and perform end-to-end testing.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Verify functionality in staging.",
+                    "description": "Check that your feature works as intended. Look for performance regressions and monitor logs for errors.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Deploy to production.",
+                    "description": "Follow your team's release process. Prepare rollback plans and monitor closely after release.",
+                    "priority": "3"
+                }
+            ]
+        },
+        {
+            "content": "Post-Deployment",
+            "description": "Ensure that your feature continues to perform well and enriches the user experience.",
+            "priority": "3",
+            "subtasks": [
+                {
+                    "content": "Monitor application logs for errors.",
+                    "description": "Set up alerts for exceptions and monitor logs for unforeseen issues. Quick response can prevent minor issues from escalating.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Check system performance.",
+                    "description": "Use monitoring tools to track performance metrics. Look for any degradation that might be related to your changes.",
+                    "priority": "3"
+                },
+                {
+                    "content": "Gather user feedback.",
+                    "description": "Use direct feedback, support tickets, and usage metrics to understand how well your feature meets user needs. Plan improvements based on insights.",
+                    "priority": "3"
+                }
+            ]
+        }
+    ]
+}

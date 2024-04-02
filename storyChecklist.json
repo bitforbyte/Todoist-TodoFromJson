@@ -103,23 +103,13 @@
             "priority": "3",
             "subtasks": [
                 {
-                    "content": "Merge code to the main branch.",
+                    "content": "Merge code to the development branch.",
                     "description": "Ensure your branch is up to date and passes all checks. Coordinate with your team to avoid conflicts.",
                     "priority": "3"
                 },
                 {
-                    "content": "Deploy to staging environment.",
-                    "description": "Mimic production as closely as possible. Verify integrations and perform end-to-end testing.",
-                    "priority": "3"
-                },
-                {
-                    "content": "Verify functionality in staging.",
-                    "description": "Check that your feature works as intended. Look for performance regressions and monitor logs for errors.",
-                    "priority": "3"
-                },
-                {
-                    "content": "Deploy to production.",
-                    "description": "Follow your team's release process. Prepare rollback plans and monitor closely after release.",
+                    "content": "Verify functionality in Lower Environments.",
+                    "description": "Verify integrations and perform end-to-end testing.",
                     "priority": "3"
                 }
             ]
